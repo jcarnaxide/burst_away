@@ -4,6 +4,9 @@ import ctypes
 import shutil
 import random
 
+def ansi_cursor_sel_str(x, y):
+	return "\033[" + str(y+1) + ";" + str(x+1)
+
 # Setup terminal for ANSI escape characters
 kernel32 = ctypes.windll.kernel32
 kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
@@ -28,7 +31,7 @@ colors_to_use.remove(color)
 untouched_list = []
 for j in range(row):
 	for i in range(col):
-		print("\033[" + str(j+1) + ";" + str(i+1) + "H" + color + char, end='')
+		print(ansi_cursor_sel_str(i,j) + "H" + color + char, end='')
 		untouched_list.append(i + j*col)
 print('', end='', flush=True)
 
@@ -52,7 +55,7 @@ while(True):
 		mod_list.remove(choice)
 		j = int(choice / col)
 		i = choice % col
-		print("\033[" + str(j+1) + ";" + str(i+1) + "H" + color + char, end='', flush=True)
+		print(ansi_cursor_sel_str(i,j) + "H" + color + char, end='', flush=True)
 		size = len(mod_list)
 		time.sleep(0.00001)
 
