@@ -3,13 +3,17 @@ import subprocess
 import ctypes
 import shutil
 import random
+import sys
 
 def ansi_cursor_sel_str(x, y):
 	return "\033[" + str(y+1) + ";" + str(x+1)
 
 def init_window(col, row, color, char):
 	# clean up current window
-	subprocess.run("cls", shell=True)
+	if sys.platform.startswith('win32'):
+		subprocess.run("cls", shell=True)
+	elif sys.platform.startswith('linux'):
+		subprocess.run("clear", shell=True)
 	
 	# prepare initial window for changes later
 	untouched_list = []
@@ -20,9 +24,10 @@ def init_window(col, row, color, char):
 	print('', end='', flush=True)
 	return untouched_list
 
+if sys.platform.startswith('win32'):
 # Setup terminal for ANSI escape characters
-kernel32 = ctypes.windll.kernel32
-kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+	kernel32 = ctypes.windll.kernel32
+	kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
 # get size of terminal window
 col, row = shutil.get_terminal_size()
